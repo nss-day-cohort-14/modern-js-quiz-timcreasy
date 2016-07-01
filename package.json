@@ -1,0 +1,30 @@
+{
+  "name": "modern-js-quiz-timcreasy",
+  "version": "1.0.0",
+  "description": "## Setup",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nss-day-cohort-14/modern-js-quiz-timcreasy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nss-day-cohort-14/modern-js-quiz-timcreasy/issues"
+  },
+  "homepage": "https://github.com/nss-day-cohort-14/modern-js-quiz-timcreasy#readme",
+  "dependencies": {
+    "jquery": "^3.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-jshint": "^2.0.1",
+    "gulp-watch": "^4.3.8",
+    "jshint": "^2.9.2",
+    "jshint-stylish": "^2.2.0",
+    "watchify": "^3.7.0"
+  }
+}
