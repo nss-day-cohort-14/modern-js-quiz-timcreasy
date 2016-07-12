@@ -1,3 +1,5 @@
+"use strict";
+
 // Module for creating and exporting list of robot model constructors
 
 // Require robotTypes

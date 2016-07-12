@@ -1,164 +1,165 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// Defines module for Modification constructor
-function Modification(modificationName, damageIncrease, protectionIncrease) {
+"use strict";
 
-  this.modificationName = modificationName;
-  this.damageIncrease = damageIncrease;
-  this.protectionIncrease = protectionIncrease;
-
-};
-
-// Export Modification module
-module.exports = Modification;
-},{}],2:[function(require,module,exports){
 // Module to construct and export each Robot
 function Robot(type) {
   this.type = type;
   this.currentHealth = null;
 }
-// Robot.prototype.getInitalHealth = function() {
-//   let health = Math.floor(Math.random() * (this.maxHealth - this.minHealth + 1)) + this.minHealth;
-//   return health;
-// }
 
 // Export Robot
 module.exports = Robot;
+
+},{}],2:[function(require,module,exports){
+"use strict";
+
+// Gets a range and returns a randomAttack
+function getInitialHealth(healthMax, healthMin) {
+  let initialHealth = Math.floor(Math.random() * (healthMax - healthMin + 1)) + healthMin;
+  return initialHealth;
+}
+
+module.exports = getInitialHealth;
+
 },{}],3:[function(require,module,exports){
-// Defines module for Weapon constructor
+"use strict";
 
-function Weapon(weaponName, weaponDamage) {
+// Gets a range and returns a randomAttack
+function getRandomAttack(attackMax, attackMin) {
+  let randomAttack = Math.floor(Math.random() * (attackMax - attackMin + 1)) + attackMin;
+  return randomAttack;
+}
 
-  this.weaponName = weaponName;
-  this.weaponDamage = weaponDamage;
+module.exports = getRandomAttack;
 
-};
-
-// Export Weapon module
-module.exports = Weapon;
 },{}],4:[function(require,module,exports){
-// Require necessary modules
-var robotModels = require('./robotModels');
-var weaponList = require('./weaponList');
-var modificationList = require('./modificationList');
+"use strict";
 
-var playerOneOptions = {};
-var playerTwoOptions = {};
+const robotModels = require('./robotModels');
+const getRandomAttack = require('./getRandomAttack');
+const getInitialHealth = require('./getInitialHealth');
+const writeToAttackLog = require('./writeToAttackLog');
 
-// Walks user through creation of two robots, with weapons and modifications, to prepare for battle
-function getPlayers() {
+// Keeps track of currentAttacker
+let currentAttacker = 1;
 
-  // Change heading to Create Player 1
-  $('#playerCreateHeading').text("Create Player 1");
+// players
+let playerOne = null;
+let playerTwo = null;
 
-  // Show butttons for robot selection
-  showRobotSelectionButtons();
+// Initally hide attack button
+$('#attackButton').hide();
+
+function instantiatePlayer(name, selectedRobot) {
+
+  let robot = null;
+
+  // iniate proper robotModel
+  if (selectedRobot === "viper") {
+    robot = robotModels.ViperDrone();
+    robot.name = name;
+  } else if (selectedRobot === "crazy") {
+    robot = robotModels.CrazyDrone();
+    robot.name = name;
+  } else if (selectedRobot === "caveman") {
+    robot = robotModels.CavemanBipedal();
+    robot.name = name;
+  } else if (selectedRobot === "rango") {
+    robot = robotModels.RangoBipedal();
+    robot.name = name;
+  } else if (selectedRobot === "master") {
+    robot = robotModels.MasterMicron();
+    robot.name = name;
+  } else if (selectedRobot === "willis") {
+    robot = robotModels.WillisMicron();
+    robot.name = name;
+  }
+
+  // Return instantiated robot
+  return robot;
 
 }
 
+function createPlayers() {
 
-function addButtons(data, eventListener) {
+  // Test if fields are empty
+  if ($('#robotOneInput').val() === "" || $('#robotTwoInput').val() === "") {
+    window.alert("Please fill out both fields to continue");
+  } else {
 
-  // Get reference to page
-  let playerCreateButtonsOutput = $('#playerCreateButtonsOutput');
+    // Fields not empty, create players
+    playerOne = instantiatePlayer($('#robotOneInput').val(), $('#robotOneSelect').val());
+    playerTwo = instantiatePlayer($('#robotTwoInput').val(), $('#robotTwoSelect').val());
 
-  // Clear page before adding buttons
-  playerCreateButtonsOutput.empty();
+    // Initialize health
+    playerOne.currentHealth = getInitialHealth(playerOne.maxHealth, playerOne.minHealth);
+    playerTwo.currentHealth = getInitialHealth(playerTwo.maxHealth, playerTwo.minHealth);
 
-  // Create correct number of buttons using size of data
-  for (item in data) {
 
-    // Formats item name by splitting at uppercase characters and seperating with a space
-    let formattedItemName = item.match(/[A-Z][a-z]+/g).join(" ");
-    
-    // Create button using formattedRobotName as the text
-    var buttonToAdd = $('<button></button>').text(formattedItemName);
+    // Hide create button
+    $('#createButton').hide();
 
-    // Add button to page
-    playerCreateButtonsOutput.append(buttonToAdd);
-
-    // Add click event listener to button
-    buttonToAdd.click(eventListener);
+    // Show attack button
+    $('#attackButton').show();
 
   }
 
 }
 
+function attackPressed() {
 
-// Adds buttons to page for user to select a robot model to battle
-function showRobotSelectionButtons() {
+  // Only fight if both healths are positive
+  if (playerOne.currentHealth > 0 && playerTwo.currentHealth > 0) {
 
-  // Set appropriate heading prompt
-  $('#playerCreatePrompt').text("Select a robot model");
+    // If currentAttacker is playerOne
+    if (currentAttacker === 1) {
 
-  // Add robot butttons
-  addButtons(robotModels, showWeaponSelectionButtons);
+      // Get attackPoints
+      let attackPoints = getRandomAttack(playerOne.maxAttack, playerOne.minAttack);
+      // playerOne attack playerTwo
+      playerTwo.currentHealth = playerTwo.currentHealth - attackPoints;
+      // Set currentAttacker to be playerTwo
+      currentAttacker = 2;
+      // Attack string
+      let attackString = `<p>${playerOne.name}'s ${playerOne.model} ${playerOne.type} attacked ${playerTwo.name}'s ${playerTwo.model} ${playerTwo.type} and dealt ${attackPoints} damage</p>`;
+      // Write attack string to DOM
+      writeToAttackLog(attackString);
+
+    } else if (currentAttacker === 2) {
+
+      // Get attackPoints
+      let attackPoints = getRandomAttack(playerTwo.maxAttack, playerTwo.minAttack);
+      // playerTwo attack playerOne
+      playerOne.currentHealth = playerOne.currentHealth - attackPoints;
+      // Set currentAttacker to be playerOne
+      currentAttacker = 1;
+      // Attack string
+      let attackString = `<p>${playerTwo.name}'s ${playerTwo.model} ${playerTwo.type} attacked ${playerOne.name}'s ${playerOne.model} ${playerOne.type} and dealt ${attackPoints} damage</p>`;
+      // Write attack string to DOM
+      writeToAttackLog(attackString);
+
+    }
+
+  }
+
+  // If last attack caused a fatal blow
+  if (playerOne.currentHealth <= 0) {
+    $('#winnerOutput').text(`${playerTwo.name} Wins!`);
+  } else if (playerTwo.currentHealth <= 0) {
+    $('#winnerOutput').text(`${playerOne.name} Wins!`);
+  }
 
 }
 
-// Adds buttons to page for user to select a weapon for robot
-function showWeaponSelectionButtons(event) {
+// Add event listener to create button
+$('#createButton').click(createPlayers);
 
-  // Add previosly selected robot to player options
-  playerOneOptions.model = event.target.innerText;
+// Add event listener to attack button
+$('#attackButton').click(attackPressed);
 
-  // Set appropriate heading prompt
-  $('#playerCreatePrompt').text("Select a weapon");
-  
-  // Add weapon buttons
-  addButtons(weaponList, showModificationSelectionButtons);
+},{"./getInitialHealth":2,"./getRandomAttack":3,"./robotModels":5,"./writeToAttackLog":7}],5:[function(require,module,exports){
+"use strict";
 
-}
-
-// Adds buttons to page for user to select a modification for robot
-function showModificationSelectionButtons(event) {
-
-  // Add previosly selected robot to player options
-  playerOneOptions.weapon = event.target.innerText;
-
-  // Set appropriate heading prompt
-  $('#playerCreatePrompt').text("Select a modification");
-
-  // Add modification buttons
-  addButtons(modificationList, null);
-
-}
-
-
-
-// Export getPlayers
-module.exports = getPlayers;
-},{"./modificationList":5,"./robotModels":7,"./weaponList":9}],5:[function(require,module,exports){
-// Defines all modifications availble to user, and exports list of availble modifications
-
-// Require Modification constructor
-var Modification = require('./Modification');
-
-// Create weapons object, to hold all newly created weapons
-var modifications = {
-  "PowerPack": new Modification("Power Pack", 3, 5),
-  "ManOnFire": new Modification("Man on Fire", 7, 1),
-  "BringTheHeat": new Modification("Bring the Heat", 4, 8),
-  "TheProtector": new Modification("The Protector", 3, 14),
-  "ManOfHisWord": new Modification("Man of His Word", 10, 3),
-  "Glory": new Modification("Glory", 8, 8)
-}
-
-// Export all modifications
-module.exports = modifications;
-},{"./Modification":1}],6:[function(require,module,exports){
-// Require necessary modules
-var getPlayers = require('./getPlayers');
-
-
-
-// Get players
-getPlayers();
-// Battle
-// Print results
-
-
-
-},{"./getPlayers":4}],7:[function(require,module,exports){
 // Module for creating and exporting list of robot model constructors
 
 // Require robotTypes
@@ -190,7 +191,10 @@ var robotModels = {
 
 // Export robotModels
 module.exports = robotModels;
-},{"./robotTypes":8}],8:[function(require,module,exports){
+
+},{"./robotTypes":6}],6:[function(require,module,exports){
+"use strict";
+
 // Module for exporting list of robot type constructors
 
 // Require Robot constructor
@@ -232,22 +236,16 @@ module.exports = {
   Bipedal,
   Micron
 };
-},{"./Robot":2}],9:[function(require,module,exports){
-// Defines all weapons availble to user, and exports list of availble weapons
 
-// Require Weapon constructor
-var Weapon = require('./Weapon');
+},{"./Robot":1}],7:[function(require,module,exports){
+"use strict";
 
-// Create weapons object, to hold all newly created weapons
-var weapons = {
-  "WarHammer": new Weapon("War Hammer", 8),
-  "FireCannon": new Weapon("Fire Cannon", 10),
-  "SquirtGun": new Weapon("Squirt Gun", 4),
-  "AngelDust": new Weapon("Angel Dust", 7),
-  "GoldSword": new Weapon("Gold Sword", 12),
-  "Rope": new Weapon("Rope", 6)
+function writeToAttackLog(attackString) {
+
+  $('#attackLog').prepend(attackString);
+
 }
 
-// Export all weapons
-module.exports = weapons;
-},{"./Weapon":3}]},{},[6]);
+module.exports = writeToAttackLog;
+
+},{}]},{},[4]);
