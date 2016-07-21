@@ -3,7 +3,7 @@
 // Module for exporting list of robot type constructors
 
 // Require Robot constructor
-var Robot = require('./Robot');
+let Robot = require('./Robot');
 
 // Type Drone
 function Drone(model, maxHealth, minHealth, maxAttack, minAttack) {

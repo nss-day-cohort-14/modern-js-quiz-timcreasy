@@ -14,7 +14,7 @@ module.exports = Robot;
 "use strict";
 
 // Gets a range and returns a randomAttack
-function getInitialHealth(healthMax, healthMin) {
+let getInitialHealth = (healthMax, healthMin) => {
   let initialHealth = Math.floor(Math.random() * (healthMax - healthMin + 1)) + healthMin;
   return initialHealth;
 }
@@ -25,7 +25,7 @@ module.exports = getInitialHealth;
 "use strict";
 
 // Gets a range and returns a randomAttack
-function getRandomAttack(attackMax, attackMin) {
+let getRandomAttack = (attackMax, attackMin) => {
   let randomAttack = Math.floor(Math.random() * (attackMax - attackMin + 1)) + attackMin;
   return randomAttack;
 }
@@ -50,7 +50,7 @@ let playerTwo = null;
 // Initally hide attack button
 $('#attackButton').hide();
 
-function instantiatePlayer(name, selectedRobot) {
+let instantiatePlayer = (name, selectedRobot) => {
 
   let robot = null;
 
@@ -80,7 +80,7 @@ function instantiatePlayer(name, selectedRobot) {
 
 }
 
-function createPlayers() {
+let createPlayers = () => {
 
   // Test if fields are empty
   if ($('#robotOneInput').val() === "" || $('#robotTwoInput').val() === "") {
@@ -106,7 +106,7 @@ function createPlayers() {
 
 }
 
-function attackPressed() {
+let attackPressed = () => {
 
   // Only fight if both healths are positive
   if (playerOne.currentHealth > 0 && playerTwo.currentHealth > 0) {
@@ -163,10 +163,10 @@ $('#attackButton').click(attackPressed);
 // Module for creating and exporting list of robot model constructors
 
 // Require robotTypes
-var robotTypes = require('./robotTypes');
+let robotTypes = require('./robotTypes');
 
 // Collection of robot model constructors
-var robotModels = {
+let robotModels = {
 
   "ViperDrone": function() {
     return new robotTypes.Drone("Viper", 80, 40, 15, 5);
@@ -198,7 +198,7 @@ module.exports = robotModels;
 // Module for exporting list of robot type constructors
 
 // Require Robot constructor
-var Robot = require('./Robot');
+let Robot = require('./Robot');
 
 // Type Drone
 function Drone(model, maxHealth, minHealth, maxAttack, minAttack) {
@@ -240,10 +240,9 @@ module.exports = {
 },{"./Robot":1}],7:[function(require,module,exports){
 "use strict";
 
-function writeToAttackLog(attackString) {
+let writeToAttackLog = (attackString) => {
 
   $('#attackLog').prepend(attackString);
-
 }
 
 module.exports = writeToAttackLog;

@@ -3,10 +3,10 @@
 // Module for creating and exporting list of robot model constructors
 
 // Require robotTypes
-var robotTypes = require('./robotTypes');
+let robotTypes = require('./robotTypes');
 
 // Collection of robot model constructors
-var robotModels = {
+let robotModels = {
 
   "ViperDrone": function() {
     return new robotTypes.Drone("Viper", 80, 40, 15, 5);

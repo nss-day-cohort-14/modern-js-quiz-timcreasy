@@ -15,7 +15,7 @@ let playerTwo = null;
 // Initally hide attack button
 $('#attackButton').hide();
 
-function instantiatePlayer(name, selectedRobot) {
+let instantiatePlayer = (name, selectedRobot) => {
 
   let robot = null;
 
@@ -45,7 +45,7 @@ function instantiatePlayer(name, selectedRobot) {
 
 }
 
-function createPlayers() {
+let createPlayers = () => {
 
   // Test if fields are empty
   if ($('#robotOneInput').val() === "" || $('#robotTwoInput').val() === "") {
@@ -71,7 +71,7 @@ function createPlayers() {
 
 }
 
-function attackPressed() {
+let attackPressed = () => {
 
   // Only fight if both healths are positive
   if (playerOne.currentHealth > 0 && playerTwo.currentHealth > 0) {
