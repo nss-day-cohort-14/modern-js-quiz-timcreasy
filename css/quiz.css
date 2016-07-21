@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#content {
+  width: 80%;
+  margin: 15px auto;
+}
+
+h2 {
+  text-align: center;
+}
+
+#robotOneInput {
+  margin-left: 150px;
+  float: left;
+  width: 20%;
+  text-align: center;
+}
+
+#robotTwoInput {
+  margin-right: 150px;
+  float: right;
+  width: 20%;
+  text-align: center;
+}
+
+#robotOneSelect {
+  margin-left: 152px;
+  margin-top: 10px;
+  float: left;
+  width: 20%;
+  text-align: center;
+}
+
+#robotTwoSelect {
+  margin-right: 152px;
+  margin-top: 10px;
+  float: right;
+  width: 20%;
+  text-align: center;
+}
+
+#attackButton {
+  display: block;
+  clear: both;
+  margin: 0 auto;
+}
+
+#createButton {
+  display: block;
+  clear: both;
+  margin: 0 auto;
+}
